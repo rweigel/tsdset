@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+ <html>
+ 	<head>
+ 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+ 		<title>TSDS URL Template Generator</title>
+ 		<link rel="stylesheet" type="text/css" href="deps/main.css">
+ 		<link rel="icon" type="image/ico" href="deps/favicon.ico"/>
+
+ 		<script type="text/javascript" src="deps/1.7.2/jquery.min.js"></script>
+ 		<script type="text/javascript" src="deps/strftime.js"></script>
+ 		<script type="text/javascript" src="deps/sprintf-0.7-beta1.js"></script>	
+ 		<script type="text/javascript" src="deps/date.js"></script>
+ 		<script type="text/javascript" src="deps/jquery.scrollTo-min.js"></script>
+
+		<script type="text/javascript" src="lib/testconnection.js"></script>
+ 		<script type="text/javascript" src="lib/checkproxy.js"></script>
+ 		<script type="text/javascript" src="lib/head.js"></script>
+ 		<script type="text/javascript" src="lib/expandtemplate.js"></script>  		
+ 	</head>
+	<script>
+
+	$(document).ready(function(){
+		$("#TemplatePrefix").val("http://magweb.cr.usgs.gov/data/magnetometer/BDT/OneMinute/");
+		$("#Template").val("bdt$Y$m$dvmin.min");
+		$("#Start").val("2012-01-01");
+		$("#Stop").val("2012-04-31");
+		$("#GenerateURLs").click(function () {generateurls()});
+		$("#CheckURLs").click(function () {checkurls()})
+	});
+
+
+	//checkurl = "http://viviz.org/gallery/css/transparent.gif";
+	//testconnection(checkurl,2000,"connectionerror","");
+
+	xtic = new Date();
+	var Expander = [];
+	Expander[0]  = "/";
+	Expander[1]  = "http://sarahandjeremy.net:8180/AutoplotServlet/ScriptServlet2?fast=on&resourceURI=$resourceURI&timerange=$timerange";
+	Expander[2]  = "http://filefinder.elasticbeanstalk.com/v1/finder";	
+	var Proxy      = "http://localhost:8002/proxy?url=";
+
+	function expanderurl() {
+		if ($('#generateclient').val() == "autoplot") {
+			return Expander[1] + "?fast=on&" + "&resourceURI=" + $("#TemplatePrefix").val() + $("#Template").val() + "&timerange=" + $("#Start").val() + "/" + $("#Stop").val(); 
+		} else if ($('#generateclient').val() == "filefinder") {
+			var date1 = strftime('%Y+%m+%d+00+00+00',$("#Start").val());
+			var date2 = strftime('%Y+%m+%d+00+00+00',$("#Stop").val());
+			return Expander[2] + "?template=" + $("#TemplatePrefix").val() + $("#Template").val().replace("$","%") + "&date1=" + date1 + "&date2=" + date2 + "&Find+Files=Submit";				
+		} else {
+			return Expander[0] + "?template=" + $("#TemplatePrefix").val() + $("#Template").val() + "&start=" + $("#Start").val() + "&stop=" + $("#Stop").val();
+		}
+	}
+	
+	function getoptions() {
+		options = {};
+		options.template = $("#TemplatePrefix").val() + $("#Template").val();
+		options.start    = $("#Start").val();
+		options.stop     = $("#Stop").val();
+		options.type     = "strftime";
+		options.check    = false;
+		options.debug    = true;
+		return options;
+	}
+	function finished(files,headers,options) {
+		$("#"+options.report).val(files.join("\n"));
+		$("#"+options.report).scrollLeft(1000);
+		var toc = new Date() - xtic;
+		$("#"+options.report+'report').text(files.length + " in " + toc + " ms");
+	}
+
+	function geturls(id) {
+		$.ajax({
+			type: 'GET',
+			url: expanderurl(), 
+			error: function (err) {$('#urlsreport').text(err)}, 
+			success: function (data, textStatus, jqXHR) {
+				// If redirected to login page for network.
+				if (data.match("<html>")) {$('#urlsreport').text('Check internet connection')};
+				$('#'+id).val(data);
+				$('#'+id).scrollLeft(1000);
+				var toc = new Date() - xtic;
+				$('#'+id+'report').text(data.split("\n").length + " in " + toc + " ms");}});
+	}
+
+	function checkurls() {
+		xtic = new Date();
+		var urls = $('#urls').val().split("\n");
+		options  = getoptions();
+		options.check  = true;
+		options.report = "urlsv";
+		if ($('#checkclient').val() == "browser") {
+			checkproxy(urls[0],Proxy,"#report");
+			expandtemplate(options,finished);
+		} else {		
+			console.log("Server-side check");
+			geturls('urlsv');
+		}
+	}
+
+	function generateurls() {
+		xtic = new Date();
+		var options = getoptions();
+		options.check  = false;
+		options.report = "urls";
+		if ($('#generateclient').val() == "browser") {
+			expandtemplate(options,finished);
+		} else {
+			console.log("Server-side generate");
+			geturls('urls');
+		}
+
+	}
+	</script>
+ 	<body>
+ 	<div style="text-align:center;"><span id="connectionerror" style="background-color:yellow;"></span></div>
+ 	<div id="submiturl"></div>
+	 	<div style="width:50%">
+	 	<form id="form" action="/" method="get">
+	 		<input type="submit" class="try" value="Submit">
+			Template prefix
+	 		<br/>
+			<input class="enter" type="text" id="TemplatePrefix"></input>
+			* Template
+	 		<br/>
+	 		<input class="enter" type="text" id="Template"></input>
+			* Start
+	 		<br/>
+	 		<input class="enter" type="text" id="Start"></input>
+			* Stop
+	 		<br/>
+	 		<input class="enter" type="text" id="Stop"></input>
+		</form>
+	 	<input id="GenerateURLs" type="button" value="Generate URLs">
+	 	using
+	 	<select style="width:8em;height:1.5em" id='generateclient'>
+  				<option value="browser">browser</option>
+  				<option value="server">node.js server</option>
+  				<option value="autoplot">autoplot servlet</option>
+  				<option value="filefinder">filefinder server</option>
+		</select>
+		&nbsp;&nbsp;
+	 	<input id="CheckURLs" type="button" value="Check URLs">
+	 	using
+	 	<select style="width:8em;height:1.5em" id='checkclient'>
+  				<option value="browser">browser</option>
+  				<option value="server">node.js server</option>
+  				<option value="autoplot">autoplot servlet</option>
+  				<option value="filefinder">filefinder server</option>
+		</select>
+		
+		<span id="report" style="display:none"></span>
+	 	<br/>		
+		Generated URLs <span id="urlsreport" class="report"></span>
+	  	<textarea id="urls" class="try"></textarea>
+		<br/>
+		Valid URLs <span id="urlsvreport" class="report"></span>
+	  	<textarea id="urlsv" class="try"></textarea>
+		Invalid URLs
+		<br/>
+	  	<textarea id="urlsi" class="try"></textarea>		
+	</div>
+ 	</body>
+ </html>

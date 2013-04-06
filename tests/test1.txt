@@ -1,0 +1,2 @@
+http://magweb.cr.usgs.gov/data/magnetometer/BDT/OneMinute/
+2013-01-01,2013-01-05,strftime,bdt$Y$m$dvmin.min
