@@ -1,9 +1,3 @@
-// Command-line
-// node app.js tests.txt [check] [debug]
-//
-// Server
-// node app.js 8001;curl http://localhost:8001/app?template=&start=&stop=&type=&check=
-
 var fs      = require('fs');
 
 // For including external js, see also 

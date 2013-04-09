@@ -8,14 +8,14 @@
  		
  		<script>
 
- 		function range(start, stop, step){
+ 		function range(start, stop, step) {
  	 		  var step = parseInt(step || "1");
- 	 		  var a=parseInt(start);
- 	 		  var b=parseInt(stop);
- 	 		  var str = "";
+ 	 		  var a = parseInt(start);
+ 	 		  var b = parseInt(stop);
+ 	 		  var s = "";
  	 		  var i = a-step;
- 	 		  while (i < b) {str = str + (i + step) + ",";i=i+step;};
- 	 		  return str.slice(0,-1);
+ 	 		  while (i < b) {s = s + (i+step) + ",";i = i+step;};
+ 	 		  return s.slice(0,-1);
  	 	}
  		
  		function expand(list,Columns) {

@@ -2,7 +2,7 @@
  <html>
  	<head>
  		<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
- 		<title>TSDS URL Template Generator</title>
+ 		<title>URL Template Expander</title>
  		<link rel="stylesheet" type="text/css" href="deps/main.css">
  		<link rel="icon" type="image/ico" href="deps/favicon.ico"/>
 
@@ -37,7 +37,7 @@
 	Expander[0]  = "/";
 	Expander[1]  = "http://sarahandjeremy.net:8180/AutoplotServlet/ScriptServlet2?fast=on&resourceURI=$resourceURI&timerange=$timerange";
 	Expander[2]  = "http://filefinder.elasticbeanstalk.com/v1/finder";	
-	var Proxy      = "http://localhost:8002/proxy?url=";
+	var Proxy    = "http://localhost:8002/proxy?url=";
 
 	function expanderurl() {
 		if ($('#generateclient').val() == "autoplot") {
@@ -75,7 +75,8 @@
 			error: function (err) {$('#urlsreport').text(err)}, 
 			success: function (data, textStatus, jqXHR) {
 				// If redirected to login page for network.
-				if (data.match("<html>")) {$('#urlsreport').text('Check internet connection')};
+				
+				if (data.match("<html>")) {$('#'+id+'report').show().text('Check internet connection or server.');return;};
 				$('#'+id).val(data);
 				$('#'+id).scrollLeft(1000);
 				var toc = new Date() - xtic;
@@ -83,6 +84,7 @@
 	}
 
 	function checkurls() {
+		$('#urlsvreport').text('');
 		xtic = new Date();
 		var urls = $('#urls').val().split("\n");
 		options  = getoptions();
@@ -98,6 +100,8 @@
 	}
 
 	function generateurls() {
+		$('#urlsreport').text('');
+
 		xtic = new Date();
 		var options = getoptions();
 		options.check  = false;
