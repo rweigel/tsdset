@@ -36,8 +36,8 @@
  					List.splice(0,Columns.length-1);
  				}
  				List.forEach(function (el,i) {
- 		 			List[i] = el.replace(/\(\:\)|\[\:\]/g,function () {return range(0,Columns[i].split(",").length-1)});
- 					List[i] = el.replace(/\(\:\)|\[\:\]/g,function () {return range(0,Columns[i].split(",").length-1)});
+ 		 			List[i] = el.replace(/\(\:\)/g,function () {return "(" + range(0,Columns[i].split(",").length-1) + ")"});
+ 		 			List[i] = el.replace(/\[\:\]/g,function () {return "[" + range(0,Columns[i].split(",").length-1) + "]"});
  					List[i] = List[i].replace(/\(|\)|\[|\]/g,"");
  	 			})
  	 			if (List.length < Columns.length) {
@@ -59,49 +59,88 @@
  	 				var j = 0;
  	 				while (j < Columns[List.length-1].match(/\d+,/g).length+1) {List[List.length-1] += ""+j+",";j=j+1;}
  	 				List[List.length-1] = List[List.length-1].replace(/,$/,"");
-	 			}
+ 	 				if (Columns[List.length-1].match(/^\(/)) {
+ 	 	 				List[List.length-1] = "(" + List[List.length-1] + ")";
+	 					$("<p>Warning: Last element given is : but only (:) makes sense.  Assuming (:).</p>").appendTo($('#columnLabelValuesError'))
+ 	 				}
+
+ 	 				if (Columns[List.length-1].match(/^\[/)) {
+ 	 	 				List[List.length-1] = "[" + List[List.length-1] + "]"
+	 					$("<p>Warning: Last element given is : but only [:] makes sense.  Assuming [:].</p>").appendTo($('#columnLabelValuesError'))
+ 	 				};
+
+ 	 			}
  			}
 	 		return List;
  		}
 
- 		$(document).ready(function(){
-	 		for (var j=0;j < Tests.length;j++) {
-		 		Tests[j].groupTypes = new Array();
-		 		expand(Tests[j].columns).forEach(function (el,i) {
-		 							Tests[j].groupTypes[i] = "scalar";
-				 					if (el.match(/\[/)) {Tests[j].groupTypes[i] = "spectrogram"}
-				 					if (el.match(/\(/)) {Tests[j].groupTypes[i] = "vector"}})
-				console.log("--");
-				Tests[j].Columns = expand(Tests[j].columns);
-				$("#columns").val(JSON.stringify(Tests[j].columns));
-				$("#Columns").val(JSON.stringify(Tests[j].Columns));
-		 		console.log(Tests[j].columns);
-				console.log(Tests[j].Columns);
-		 		console.log(Check[j].Columns);
-		 		for (var k=0;k<Tests[j].Columns.length;k++)
-					console.log(Tests[j].Columns[k] === Check[j].Columns[k])
-	
-				Tests[j].ColumnLabelValues = expand(Tests[j].columnLabelValues,Tests[j].Columns);
-		 		$("#columnLabelValues").val(JSON.stringify(Tests[j].columnLabelValues));
-		 		$("#ColumnLabelValues").val(JSON.stringify(Tests[j].ColumnLabelValues));
-		 		console.log(Tests[j].columnLabelValues);
-		 		console.log(Tests[j].ColumnLabelValues);
-		 		console.log(Check[j].ColumnLabelValues);
-		 		for (var k=0;k<Tests[j].ColumnLabelValues.length;k++)
-					console.log(Tests[j].ColumnLabelValues[k] === Check[j].ColumnLabelValues[k])
-
+		function runtest(j) {
+			j = parseInt(j);
+	 		Tests[j].groupTypes = new Array();
+	 		expand(Tests[j].columns).forEach(function (el,i) {
+	 							Tests[j].groupTypes[i] = "scalar";
+			 					if (el.match(/\[/)) {Tests[j].groupTypes[i] = "spectrogram"}
+			 					if (el.match(/\(/)) {Tests[j].groupTypes[i] = "vector"}})
+			console.log("Test results");
+			Tests[j].Columns = expand(Tests[j].columns);
+			$("#columns").val(JSON.stringify(Tests[j].columns));
+			$("#Columns").val(JSON.stringify(Tests[j].Columns));
+	 		err = false;
+	 		for (var k=0;k<Tests[j].Columns.length;k++) {
+	 			if (Tests[j].Columns[k] !== Check[j].Columns[k]) {
+					$("<p>Error in expanded array element at index " + k + ". Expected " + Check[j].Columns[k] + ". Found " + Tests[j].Columns[k] + ".</p>").appendTo($('#columnError'));
+					err = true;
+			 	}
+				console.log(Tests[j].Columns[k] === Check[j].Columns[k])
 	 		}
- 		});
+	 		if (!err) {$("<p>OK</p>").appendTo($('#columnError'))};
+	 		
+			Tests[j].ColumnLabelValues = expand(Tests[j].columnLabelValues,Tests[j].Columns);
+	 		$("#columnLabelValues").val(JSON.stringify(Tests[j].columnLabelValues));
+	 		$("#ColumnLabelValues").val(JSON.stringify(Tests[j].ColumnLabelValues));
+	 		for (var k=0;k<Tests[j].ColumnLabelValues.length;k++) {
+				err = false;
+	 			if (Tests[j].ColumnLabelValues[k] !== Check[j].ColumnLabelValues[k]) {
+					$("<p>Error in expanded array element at index " + k + ". Expected " + Check[j].ColumnLabelValues[k] + ". Found " + Tests[j].ColumnLabelValues[k] + ".</p>").appendTo($('#columnLabelValuesError'));
+					err = true;
+			 	}
+	 			console.log(Tests[j].ColumnLabelValues[k] === Check[j].ColumnLabelValues[k])
+	 			
+	 		}
+	 		if (!err) {$("<p>OK</p>").appendTo($('#columnLabelValuesError'))};
+
+		}
+ 		$(document).ready(function(){
+
+			$("#presets").append("<select id='presetselect' style='height:2.0em;width:100%'/>");
+			$("#presetselect").append("<option id='title'>-Tests-</option>");
+			for (i = 0; i < Tests.length; i++) {
+				var o = $("<option/>").attr("id",i).html(i+1 + ". columns=" + Tests[i].columns + ", columnLabelValues=" + Tests[i].columnLabelValues);
+				$("#presetselect").append(o);
+			}
+			$("#presetselect").change(function () {
+				$('#columnError').html('');
+				$('#columnLabelValuesError').html('');
+				var id = $(this).find("option:selected").attr("id");
+				runtest(id);
+ 			})
+			})
 
  		</script>
 	</head>
 	<body>
+	<div id="presets" style="width:50%">
+	</div>
+	
 	<div style="width:50%">
-		columns <input id="columns" style="width:100%"type="text"></input>
+		<br/>
+		columns given<input id="columns" style="width:100%"type="text"></input>
 		columns expanded <input id="Columns" style="width:100%"type="text"></input>
-		<br/><br/>
-		columnLabelValues <input id="columnLabelValues" style="width:100%"type="text"></input>
+		<div id="columnError"></div>
+		columnLabelValues given<input id="columnLabelValues" style="width:100%"type="text"></input>
 		columnLabelValues expanded <input id="ColumnLabelValues" style="width:100%"type="text"></input>
+		<div id="columnLabelValuesError"></div>
+		
 	</div>
 	</body>
 </html>
