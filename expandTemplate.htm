@@ -20,6 +20,7 @@
 	<script>
 
 	$(document).ready(function(){
+		//console.log(strftime())
 		$("#TemplatePrefix").val("http://magweb.cr.usgs.gov/data/magnetometer/BDT/OneMinute/");
 		$("#Template").val("bdt$Y$m$dvmin.min");
 		$("#Start").val("2012-01-01");
@@ -35,19 +36,27 @@
 	xtic = new Date();
 	var Expander = [];
 	Expander[0]  = "/";
-	Expander[1]  = "http://sarahandjeremy.net:8180/AutoplotServlet/ScriptServlet2?fast=on&resourceURI=$resourceURI&timerange=$timerange";
+	Expander[1]  = "http://sarahandjeremy.net:8180/AutoplotServlet/ScriptServlet2";
 	Expander[2]  = "http://filefinder.elasticbeanstalk.com/v1/finder";	
 	var Proxy    = "http://localhost:8002/proxy?url=";
 
-	function expanderurl() {
-		if ($('#generateclient').val() == "autoplot") {
-			return Expander[1] + "?fast=on&" + "&resourceURI=" + $("#TemplatePrefix").val() + $("#Template").val() + "&timerange=" + $("#Start").val() + "/" + $("#Stop").val(); 
-		} else if ($('#generateclient').val() == "filefinder") {
-			var date1 = strftime('%Y+%m+%d+00+00+00',$("#Start").val());
-			var date2 = strftime('%Y+%m+%d+00+00+00',$("#Stop").val());
-			return Expander[2] + "?template=" + $("#TemplatePrefix").val() + $("#Template").val().replace("$","%") + "&date1=" + date1 + "&date2=" + date2 + "&Find+Files=Submit";				
+	function expanderurl(check) {
+		var id = '#generateclient';
+		if (check) id = '#checkclient'
+		if ($(id).val() == "autoplot") {
+			var url = Expander[1] + "?fast=on&" + "&resourceURI=" + $("#TemplatePrefix").val() + $("#Template").val() + "&timerange=" + $("#Start").val() + "/" + $("#Stop").val();
+			if (check) url = url.replace("fast=on","fast=off");
+			return url
+		} else if ($(id).val() == "filefinder") {
+			var date1 = new Date($("#Start").val());
+			date1 = date1.strftime('%Y+%m+%d+00+00+00');
+			var date2 = new Date($("#Stop").val());
+			date2 = date2.strftime('%Y+%m+%d+00+00+00');
+			return Expander[2] + "?template=" + $("#TemplatePrefix").val() + encodeURIComponent($("#Template").val().replace(/\$/g,"%")) + "&date1=" + date1 + "&date2=" + date2 + "&Find+Files=Submit";				
 		} else {
-			return Expander[0] + "?template=" + $("#TemplatePrefix").val() + $("#Template").val() + "&start=" + $("#Start").val() + "&stop=" + $("#Stop").val();
+			var url = Expander[0] + "?template=" + $("#TemplatePrefix").val() + $("#Template").val() + "&start=" + $("#Start").val() + "&stop=" + $("#Stop").val();
+			if (check) url = url.replace("template","check=true&template");
+			return url
 		}
 	}
 	
@@ -68,15 +77,15 @@
 		$("#"+options.report+'report').text(files.length + " in " + toc + " ms");
 	}
 
-	function geturls(id) {
+	function geturls(id,check) {
 		$.ajax({
 			type: 'GET',
-			url: expanderurl(), 
+			url: expanderurl(check), 
 			error: function (err) {$('#urlsreport').text(err)}, 
 			success: function (data, textStatus, jqXHR) {
 				// If redirected to login page for network.
-				
 				if (data.match("<html>")) {$('#'+id+'report').show().text('Check internet connection or server.');return;};
+				data = data.replace("SUCCESS\n",""); // First line of filefinder response.
 				$('#'+id).val(data);
 				$('#'+id).scrollLeft(1000);
 				var toc = new Date() - xtic;
@@ -95,7 +104,7 @@
 			expandtemplate(options,finished);
 		} else {		
 			console.log("Server-side check");
-			geturls('urlsv');
+			geturls('urlsv',true);
 		}
 	}
 
