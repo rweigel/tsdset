@@ -1,6 +1,11 @@
 {
-	"name": "urltemplateexpander",
+	"name": "expandtemplate",
+	"description": "url template expander",
   	"version": "0.1.0",
+  	"repository": {
+  		"url": "https://github.com/rweigel/expandtemplate"
+  	},
+  	"main": "lib/expandtemplate",
 	"dependencies": {
 		"request" : "2.9.203",
 		"express" : "3.0.0beta7"
