@@ -35,10 +35,10 @@
 
 	xtic = new Date();
 	var Expander = [];
-	Expander[0]  = "http://mag.gmu.edu:8001/ut";
+	Expander[0]  = "/";
 	Expander[1]  = "http://sarahandjeremy.net:8180/AutoplotServlet/ScriptServlet2";
 	Expander[2]  = "http://filefinder.elasticbeanstalk.com/v1/finder";	
-	var Proxy    = "http://mag.gmu.edu:8002/proxy?url=";
+	var Proxy    = "http://localhost:8002/proxy?url=";
 
 	function expanderurl(check) {
 		var id = '#generateclient';
@@ -79,12 +79,11 @@
 		$("#"+options.report+'report').text(files.length + " in " + toc + " ms");
 	}
 
-	function geturls(id,url) {
+	function geturls(id,check) {
 		$.ajax({
 			type: 'GET',
-			url: url, 
-			error: function (err) {$('#urlsreport').text(err)},
-			dataType: "text", 
+			url: expanderurl(check), 
+			error: function (err) {$('#urlsreport').text(err)}, 
 			success: function (data, textStatus, jqXHR) {
 				// If redirected to login page for network.
 				if (data.match("<html>")) {$('#'+id+'report').show().text('Check internet connection or server.');return;};
@@ -97,8 +96,9 @@
 
 	function checkurls() {
 		$('#urlsvreport').text('');
-
-		var options    = getoptions();
+		xtic = new Date();
+		var urls = $('#urls').val().split("\n");
+		options  = getoptions();
 		options.check  = true;
 		options.report = "urlsv";
 		options.proxy  = "";
@@ -120,15 +120,15 @@
 			expandtemplate(options,finished);
 		} else {		
 			console.log("Server-side check");
-			var url = expanderurl(true);
-			geturls('urlsv',options.proxy + url);
+			geturls('urlsv',true);
 		}
 	}
 
 	function generateurls() {
 		$('#urlsreport').text('');
 
-		var options    = getoptions();
+		xtic = new Date();
+		var options = getoptions();
 		options.check  = false;
 		options.report = "urls";
 
