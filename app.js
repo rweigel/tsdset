@@ -2,17 +2,20 @@
 // node app.js tests.txt [check] [debug]
 //
 // Server
-// node app.js 8001;curl http://localhost:8001/app?template=&start=&stop=&type=&check=
-
+// node app.js 8001; curl "http://localhost:8001/ut?template=%Y%m%d&start=2001-01-01&stop=2001-01-03&type=strftime&check=false"
+// should give
+// 20010101 undefined undefined
+// 20010102 undefined undefined
 var fs      = require('fs');
 
 // For including external js, see also 
 // http://stackoverflow.com/questions/5625569/include-external-js-file-in-node-js-app
-eval(fs.readFileSync('deps/strftime.js', 'utf8'));
-eval(fs.readFileSync('deps/date.js', 'utf8'));	 
-eval(fs.readFileSync('deps/sprintf-0.7-beta1.js', 'utf8'));
-eval(fs.readFileSync('lib/expandtemplate.js', 'utf8'));
-eval(fs.readFileSync('lib/head.js', 'utf8'));
+eval(fs.readFileSync(__dirname + '/deps/strftime.js', 'utf8'));
+
+eval(fs.readFileSync(__dirname + '/deps/date.js', 'utf8'));	 
+eval(fs.readFileSync(__dirname + '/deps/sprintf-0.7-beta1.js', 'utf8'));
+eval(fs.readFileSync(__dirname + '/lib/expandtemplate.js', 'utf8'));
+eval(fs.readFileSync(__dirname + '/lib/head.js', 'utf8'));
 
 if (isNaN(process.argv[2])) {
 	runtests(process.argv[2],process.argv[3] || false, process.argv[4] || false); return;
@@ -48,16 +51,17 @@ app.get('/expandTemplate.htm', function (req, res) {
 		fs.readFile(__dirname+"/expandTemplate.htm", "utf8", function (err, data) {res.send(data)})
 })
 	
-app.get('/', function (req, res) {
-	console.log(req)
+app.get('/ut', function (req, res) {
+	//console.log(req)
 	options = parseOptions(req);
 	if (options.template === "") {
 		res.contentType("html");
 		fs.readFile(__dirname+"/index.htm", "utf8", function (err, data) {res.send(data)})
 		//runtests();
 	} else {
-		console.log(options);
+		//console.log(options);
 		expandtemplate(options,printresults);
+		//res.send("hellow")
 	}
 	function printresults(files,headers) {
 		if (headers.length) {

@@ -2,7 +2,7 @@
  <html>
  	<head>
  		<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
- 		<title>TSDS URL Template Generator</title>
+ 		<title>URL Template Expander</title>
  		<link rel="stylesheet" type="text/css" href="deps/main.css">
  		<link rel="icon" type="image/ico" href="deps/favicon.ico"/>
 
@@ -20,10 +20,11 @@
 	<script>
 
 	$(document).ready(function(){
+		//console.log(strftime())
 		$("#TemplatePrefix").val("http://magweb.cr.usgs.gov/data/magnetometer/BDT/OneMinute/");
 		$("#Template").val("bdt$Y$m$dvmin.min");
 		$("#Start").val("2012-01-01");
-		$("#Stop").val("2012-04-31");
+		$("#Stop").val("2012-01-03");
 		$("#GenerateURLs").click(function () {generateurls()});
 		$("#CheckURLs").click(function () {checkurls()})
 	});
@@ -34,20 +35,28 @@
 
 	xtic = new Date();
 	var Expander = [];
-	Expander[0]  = "/";
-	Expander[1]  = "http://sarahandjeremy.net:8180/AutoplotServlet/ScriptServlet2?fast=on&resourceURI=$resourceURI&timerange=$timerange";
+	Expander[0]  = "http://mag.gmu.edu:8001/ut";
+	Expander[1]  = "http://sarahandjeremy.net:8180/AutoplotServlet/ScriptServlet2";
 	Expander[2]  = "http://filefinder.elasticbeanstalk.com/v1/finder";	
-	var Proxy      = "http://localhost:8002/proxy?url=";
+	var Proxy    = "http://mag.gmu.edu:8002/proxy?url=";
 
-	function expanderurl() {
-		if ($('#generateclient').val() == "autoplot") {
-			return Expander[1] + "?fast=on&" + "&resourceURI=" + $("#TemplatePrefix").val() + $("#Template").val() + "&timerange=" + $("#Start").val() + "/" + $("#Stop").val(); 
-		} else if ($('#generateclient').val() == "filefinder") {
-			var date1 = strftime('%Y+%m+%d+00+00+00',$("#Start").val());
-			var date2 = strftime('%Y+%m+%d+00+00+00',$("#Stop").val());
-			return Expander[2] + "?template=" + $("#TemplatePrefix").val() + $("#Template").val().replace("$","%") + "&date1=" + date1 + "&date2=" + date2 + "&Find+Files=Submit";				
+	function expanderurl(check) {
+		var id = '#generateclient';
+		if (check) id = '#checkclient'
+		if ($(id).val() == "autoplot") {
+			var url = Expander[1] + "?fast=on&" + "&resourceURI=" + $("#TemplatePrefix").val() + $("#Template").val() + "&timerange=" + $("#Start").val() + "/" + $("#Stop").val();
+			if (check) url = url.replace("fast=on","fast=off");
+			return url
+		} else if ($(id).val() == "filefinder") {
+			var date1 = new Date($("#Start").val());
+			date1 = date1.strftime('%Y+%m+%d+00+00+00');
+			var date2 = new Date($("#Stop").val());
+			date2 = date2.strftime('%Y+%m+%d+00+00+00');
+			return Expander[2] + "?template=" + $("#TemplatePrefix").val() + encodeURIComponent($("#Template").val().replace(/\$/g,"%")) + "&date1=" + date1 + "&date2=" + date2 + "&Find+Files=Submit";				
 		} else {
-			return Expander[0] + "?template=" + $("#TemplatePrefix").val() + $("#Template").val() + "&start=" + $("#Start").val() + "&stop=" + $("#Stop").val();
+			var url = Expander[0] + "?template=" + $("#TemplatePrefix").val() + $("#Template").val() + "&start=" + $("#Start").val() + "&stop=" + $("#Stop").val();
+			if (check) url = url.replace("template","check=true&template");
+			return url
 		}
 	}
 	
@@ -59,8 +68,10 @@
 		options.type     = "strftime";
 		options.check    = false;
 		options.debug    = true;
+		options.proxy    = "";
 		return options;
 	}
+	
 	function finished(files,headers,options) {
 		$("#"+options.report).val(files.join("\n"));
 		$("#"+options.report).scrollLeft(1000);
@@ -68,14 +79,16 @@
 		$("#"+options.report+'report').text(files.length + " in " + toc + " ms");
 	}
 
-	function geturls(id) {
+	function geturls(id,url) {
 		$.ajax({
 			type: 'GET',
-			url: expanderurl(), 
-			error: function (err) {$('#urlsreport').text(err)}, 
+			url: url, 
+			error: function (err) {$('#urlsreport').text(err)},
+			dataType: "text", 
 			success: function (data, textStatus, jqXHR) {
 				// If redirected to login page for network.
-				if (data.match("<html>")) {$('#urlsreport').text('Check internet connection')};
+				if (data.match("<html>")) {$('#'+id+'report').show().text('Check internet connection or server.');return;};
+				data = data.replace("SUCCESS\n",""); // First line of filefinder response.
 				$('#'+id).val(data);
 				$('#'+id).scrollLeft(1000);
 				var toc = new Date() - xtic;
@@ -83,30 +96,59 @@
 	}
 
 	function checkurls() {
-		xtic = new Date();
-		var urls = $('#urls').val().split("\n");
-		options  = getoptions();
+		$('#urlsvreport').text('');
+
+		var options    = getoptions();
 		options.check  = true;
 		options.report = "urlsv";
+		options.proxy  = "";
+
+		var url = expanderurl(false);
+		var proxy = "";
+		if (needproxy(url,"#report")) {
+			if (checkproxy(url,Proxy,"#report")) {
+				options.proxy = Proxy;
+			} else {
+				console.log("Proxy is needed");
+				return;
+			}
+		}
+		
+		xtic = new Date();		
 		if ($('#checkclient').val() == "browser") {
-			checkproxy(urls[0],Proxy,"#report");
+			xtic = new Date();
 			expandtemplate(options,finished);
 		} else {		
 			console.log("Server-side check");
-			geturls('urlsv');
+			var url = expanderurl(true);
+			geturls('urlsv',options.proxy + url);
 		}
 	}
 
 	function generateurls() {
-		xtic = new Date();
-		var options = getoptions();
+		$('#urlsreport').text('');
+
+		var options    = getoptions();
 		options.check  = false;
 		options.report = "urls";
+
 		if ($('#generateclient').val() == "browser") {
+			xtic = new Date();		
 			expandtemplate(options,finished);
 		} else {
 			console.log("Server-side generate");
-			geturls('urls');
+			var url = expanderurl(false);
+			var proxy = "";
+			if (needproxy(url,"#report")) {
+				if (checkproxy(url,Proxy,"#report")) {
+					proxy = Proxy;
+				} else {
+					console.log("Proxy is needed");
+					return;
+				}
+			}
+			xtic = new Date();		
+			geturls('urls',proxy + url);
 		}
 
 	}
@@ -153,11 +195,8 @@
 		Generated URLs <span id="urlsreport" class="report"></span>
 	  	<textarea id="urls" class="try"></textarea>
 		<br/>
-		Valid URLs <span id="urlsvreport" class="report"></span>
+		Checked URLs <span id="urlsvreport" class="report"></span>
 	  	<textarea id="urlsv" class="try"></textarea>
-		Invalid URLs
-		<br/>
-	  	<textarea id="urlsi" class="try"></textarea>		
 	</div>
  	</body>
  </html>
