@@ -182,7 +182,7 @@ var vsprintf = function(fmt, argv) {
 	return sprintf.apply(null, argv);
 };
 
-if(exports){
+if(typeof(exports) !== "undefined"){
 	exports.sprintf = sprintf;
 	exports.vsprintf = vsprintf;
 }
