@@ -24,7 +24,7 @@
 		$("#TemplatePrefix").val("http://magweb.cr.usgs.gov/data/magnetometer/BDT/OneMinute/");
 		$("#Template").val("bdt$Y$m$dvmin.min");
 		$("#Start").val("2012-01-01");
-		$("#Stop").val("2012-04-31");
+		$("#Stop").val("2012-01-03");
 		$("#GenerateURLs").click(function () {generateurls()});
 		$("#CheckURLs").click(function () {checkurls()})
 	});
@@ -68,8 +68,10 @@
 		options.type     = "strftime";
 		options.check    = false;
 		options.debug    = true;
+		options.proxy    = "";
 		return options;
 	}
+	
 	function finished(files,headers,options) {
 		$("#"+options.report).val(files.join("\n"));
 		$("#"+options.report).scrollLeft(1000);
@@ -99,8 +101,22 @@
 		options  = getoptions();
 		options.check  = true;
 		options.report = "urlsv";
+		options.proxy  = "";
+
+		var url = expanderurl(false);
+		var proxy = "";
+		if (needproxy(url,"#report")) {
+			if (checkproxy(url,Proxy,"#report")) {
+				options.proxy = Proxy;
+			} else {
+				console.log("Proxy is needed");
+				return;
+			}
+		}
+		
+		xtic = new Date();		
 		if ($('#checkclient').val() == "browser") {
-			checkproxy(urls[0],Proxy,"#report");
+			xtic = new Date();
 			expandtemplate(options,finished);
 		} else {		
 			console.log("Server-side check");
@@ -115,11 +131,24 @@
 		var options = getoptions();
 		options.check  = false;
 		options.report = "urls";
+
 		if ($('#generateclient').val() == "browser") {
+			xtic = new Date();		
 			expandtemplate(options,finished);
 		} else {
 			console.log("Server-side generate");
-			geturls('urls');
+			var url = expanderurl(false);
+			var proxy = "";
+			if (needproxy(url,"#report")) {
+				if (checkproxy(url,Proxy,"#report")) {
+					proxy = Proxy;
+				} else {
+					console.log("Proxy is needed");
+					return;
+				}
+			}
+			xtic = new Date();		
+			geturls('urls',proxy + url);
 		}
 
 	}
@@ -166,11 +195,8 @@
 		Generated URLs <span id="urlsreport" class="report"></span>
 	  	<textarea id="urls" class="try"></textarea>
 		<br/>
-		Valid URLs <span id="urlsvreport" class="report"></span>
+		Checked URLs <span id="urlsvreport" class="report"></span>
 	  	<textarea id="urlsv" class="try"></textarea>
-		Invalid URLs
-		<br/>
-	  	<textarea id="urlsi" class="try"></textarea>		
 	</div>
  	</body>
  </html>

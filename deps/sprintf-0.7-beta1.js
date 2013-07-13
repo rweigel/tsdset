@@ -181,3 +181,8 @@ var vsprintf = function(fmt, argv) {
 	argv.unshift(fmt);
 	return sprintf.apply(null, argv);
 };
+
+if(exports){
+	exports.sprintf = sprintf;
+	exports.vsprintf = vsprintf;
+}
