@@ -5,5 +5,5 @@
   	"repository": {
   		"url": "https://github.com/rweigel/tsdset"
   	},
-  	"main": "lib/tsdset",
+  	"main": "lib/tsdset"
 }
