@@ -1,5 +1,5 @@
 {
-	"name": "TSDSET",
+	"name": "tsdset",
 	"description": "URI template expander",
   	"version": "0.1.0",
   	"repository": {
