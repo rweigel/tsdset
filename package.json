@@ -1,9 +1,9 @@
 {
-	"name": "expandtemplate",
+	"name": "tsdset",
 	"description": "url template expander",
   	"version": "0.1.0",
   	"repository": {
-  		"url": "https://github.com/rweigel/expandtemplate"
+  		"url": "https://github.com/rweigel/tsdset"
   	},
   	"main": "lib/expandtemplate",
 	"dependencies": {
