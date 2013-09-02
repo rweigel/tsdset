@@ -1,7 +1,0 @@
-http://magweb.cr.usgs.gov/data/magnetometer/BDT/OneMinute/
-1990-01-01,2000-01-04,strftime,bdt1999$m$d-${Y;offset=1}${m;offset=1}$dvmin.min
-1990-01-01,2000-01-04,strftime,bdt1999${m;increment=2}${d;increment=1}vmin.min
-1990-01-01,1990-03-01,strftime,bdt1999${m;increment=2}$dvmin.min
-1990-01-01,1990-01-10,strftime,bdt199901${d;increment=2}vmin.min
-1,9,sprintf,bdt199901%02dvmin.min
-1,9,sprintf,bdt1999010%dvmin.min

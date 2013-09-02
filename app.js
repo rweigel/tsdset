@@ -2,13 +2,10 @@ var fs      = require('fs');
 
 // For including external js, see also 
 // http://stackoverflow.com/questions/5625569/include-external-js-file-in-node-js-app
-eval(fs.readFileSync('deps/strftime.js', 'utf8'));
-eval(fs.readFileSync('deps/date.js', 'utf8'));	 
-eval(fs.readFileSync('deps/sprintf-0.7-beta1.js', 'utf8'));
-eval(fs.readFileSync('lib/expandtemplate.js', 'utf8'));
-eval(fs.readFileSync('lib/head.js', 'utf8'));
+eval(fs.readFileSync(__dirname +'/lib/expandtemplate.js', 'utf8'));
+eval(fs.readFileSync(__dirname +'/lib/head.js', 'utf8'));
 
-if (isNaN(process.argv[2])) {
+if (typeof(process.argv[2]) !== "undefined" && isNaN(process.argv[2])) {
 	runtests(process.argv[2],process.argv[3] || false, process.argv[4] || false); return;
 } else {
 	var port = process.argv[2] || 8001;
@@ -68,20 +65,25 @@ server.listen(port);
 function runtests(testfile,dohead,debug) {
 	var tests = fs.readFileSync(testfile, 'utf8').split("\n");
 	var base  = "";
+	var options = {};
 	tests.forEach(function(test,i) {
+
 		test = test.split(",");
-		if (test.length == 1) base = test[0];
-		options.template = base+test[3];
-		options.start = test[0];
-		options.stop = test[1];
-		options.type = test[2];
+		if (test[0] === '') return;
+
+		options.template = test[0];
+		options.start = test[1];
+		options.stop = test[2];
+		options.type = test[3];
+
 		options.check = dohead;
 		options.debug = debug;
 		expandtemplate(options,printresults)});
 }
 
-function printresults(files,headers) {
+function printresults(files,headers,options) {
 
+	console.log(options.template + "," + options.start + "," + options.stop + "," + options.type)
 	if (headers.length) {
 		files.forEach(function(file,i) {console.log(file + " " + headers[i]["last-modified"] + " " + headers[i]["content-length"])});
 	} else {
@@ -89,9 +91,10 @@ function printresults(files,headers) {
 			files.forEach(function(file) {console.log(file)});
 		} else {
 			for (i=0;i<5;i++) console.log(files[i])
-			print("...")
+			console.log("...")
 			for (i=files.length-1;i>files.length-6;i--) console.log(files[i])		
 		}
+		console.log("")
 	}
 }
 
