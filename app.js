@@ -1,7 +1,5 @@
 var fs      = require('fs');
 
-// For including external js, see also 
-// http://stackoverflow.com/questions/5625569/include-external-js-file-in-node-js-app
 eval(fs.readFileSync(__dirname +'/lib/expandtemplate.js', 'utf8'));
 eval(fs.readFileSync(__dirname +'/lib/head.js', 'utf8'));
 
@@ -40,14 +38,12 @@ app.get('/expandTemplate.htm', function (req, res) {
 })
 	
 app.get('/', function (req, res) {
-	console.log(req)
 	options = parseOptions(req);
 	if (options.template === "") {
 		res.contentType("html");
 		fs.readFile(__dirname+"/index.htm", "utf8", function (err, data) {res.send(data)})
 		//runtests();
 	} else {
-		console.log(options);
 		expandtemplate(options,printresults);
 	}
 	function printresults(files,headers) {
@@ -60,6 +56,7 @@ app.get('/', function (req, res) {
 	}
 })
 
+//runtests("tests/ut.txt",false,false);
 server.listen(port);
 
 function runtests(testfile,dohead,debug) {
@@ -92,7 +89,7 @@ function printresults(files,headers,options) {
 		} else {
 			for (i=0;i<5;i++) console.log(files[i])
 			console.log("...")
-			for (i=files.length-1;i>files.length-6;i--) console.log(files[i])		
+			for (i=files.length-5;i<files.length;i++) console.log(files[i])		
 		}
 		console.log("")
 	}
@@ -105,12 +102,12 @@ function parseOptions(req) {
 	function s2b(str) {if (str === "true") {return true} else {return false}}
 	function s2i(str) {return parseInt(str)}
 
-	options.template =     req.query.template ||     req.body.template  || ""
-	options.check    = s2b(req.query.check)   || s2b(req.body.check)    || false;
-	options.debug    = s2b(req.query.debug)   || s2b(req.body.debug)    || true;
-	options.type     =     req.query.type     ||     req.body.type      || ""
-	options.start    =     req.query.start    ||     req.body.start     || "";
-	options.stop     =     req.query.stop     ||     req.body.stop      || "";
+	options.template =     req.query.template || req.body.template || ""
+	options.check    = s2b(req.query.check    || req.body.check    || "false");
+	options.debug    = s2b(req.query.debug    || req.body.debug    || "true");
+	options.type     =     req.query.type     || req.body.type     || ""
+	options.start    =     req.query.start    || req.body.start    || "";
+	options.stop     =     req.query.stop     || req.body.stop     || "";
 
 	if (options.type === "") {
 		if (options.template.match("$")) {
@@ -119,6 +116,8 @@ function parseOptions(req) {
 			options.type = "sprintf";
 		}
 	}
+
+	console.log(options);
 
 	return options;
 }

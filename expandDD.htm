@@ -179,6 +179,8 @@
 				var id = $(this).find("option:selected").attr("id");
 				runtest(id);
  			})
+			$('#presetselect').find('option:eq(1)').attr('selected', true).trigger("change");
+
 
 			$('#expandcolumns').click(function () {
 				$("#columnError").text("");

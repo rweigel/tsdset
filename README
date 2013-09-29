@@ -4,14 +4,15 @@ Download and extract
 Browser interface (no server required)
  Open index.htm with web browser.
 
-Command-line (requires node.js)
- npm install
- node app.js tests.txt [check] [debug]
-
 Server (requires node.js)
  npm install
- node app.js 8001; curl http://localhost:8001/app?template=&start=&stop=&type=&check=
- 
+ node app.js 8001
+
 Browser interface 
  http://localhost:8001/
+
+Test (requires running server on localhost:8001)
+ npm install
+ node app.js tests/ut.txt [check] [debug]
+ 
  
