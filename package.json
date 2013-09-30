@@ -10,7 +10,7 @@
     "request": "2.9.203",
     "express": "3.0.0beta7"
   },
-	"scripts": {
+  "scripts": {
 	"test": "sh tests/test.sh"
-   },
+   }
 }
