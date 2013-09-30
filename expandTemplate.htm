@@ -64,6 +64,7 @@
 		var url = expanderurl(options.check);
 		
 		if (needproxy(url,"#report")) {
+			options.proxy = Proxy;
 			if (checkproxy(url,Proxy,"#report")) {
 				options.proxy = Proxy;
 			} else {
@@ -78,6 +79,7 @@
 		$("#"+options.report).val(files.join("\n"));
 		$("#"+options.report).scrollLeft(1000);
 		var toc = new Date() - xtic;
+		
 		$("#"+options.report+'report').text(files.length + " in " + toc + " ms");
 	}
 
@@ -92,7 +94,7 @@
 		$.ajax({
 			type: 'GET',
 			url: url, 
-			error: function (err) {$('#urlsreport').text(err)}, 
+			error: function (err) {$('#urlsreport').text('Error.  See console log.')}, 
 			success: function (data, textStatus, jqXHR) {
 				// If redirected to login page for network.
 				if (data.match("<html>")) {$('#'+options.report+"report").show().text('Check internet connection or server.');return;};
@@ -177,10 +179,13 @@
   				<option value="browser">browser</option>
   				<option value="server">node.js server</option>
   				<option value="autoplot">autoplot servlet</option>
-  				<option value="filefinder">filefinder server</option>
+  				<!--option value="filefinder">filefinder server</option  -->
 		</select>
-		&nbsp;&nbsp;
-	 	<input id="CheckURLs" type="button" value="Check URLs">
+		<br/>
+		Generated URLs <span id="urlsreport" class="report"></span>
+	  	<textarea id="urls" class="try"></textarea>
+		<br/>
+	 	<input id="CheckURLs" type="button" value="Generate and Check">
 	 	using
 	 	<select style="width:8em;height:1.5em" id='checkclient'>
   				<option value="browser">browser</option>
@@ -188,13 +193,9 @@
   				<option value="autoplot">autoplot servlet</option>
   				<option value="filefinder">filefinder server</option>
 		</select>
-		
 		<span id="report" style="display:none"></span>
 	 	<br/>		
-		Generated URLs <span id="urlsreport" class="report"></span>
-	  	<textarea id="urls" class="try"></textarea>
-		<br/>
-		Checked URLs <span id="urlsvreport" class="report"></span>
+		Working URLs <span id="urlsvreport" class="report"></span>
 	  	<textarea id="urlsv" class="try"></textarea>
 	</div>
  	</body>
