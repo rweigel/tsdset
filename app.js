@@ -1,7 +1,6 @@
 var fs = require('fs');
 
 eval(fs.readFileSync(__dirname +'/lib/expandtemplate.js', 'utf8'));
-eval(fs.readFileSync(__dirname +'/lib/expandISO8601Duration.js', 'utf8'));
 eval(fs.readFileSync(__dirname +'/lib/head.js', 'utf8'));
 
 if (typeof(process.argv[2]) !== "undefined" && isNaN(process.argv[2])) {
