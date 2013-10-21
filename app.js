@@ -1,6 +1,7 @@
 var fs = require('fs');
 
 eval(fs.readFileSync(__dirname +'/lib/expandtemplate.js', 'utf8'));
+eval(fs.readFileSync(__dirname +'/lib/expandISO8601Duration.js', 'utf8'));
 eval(fs.readFileSync(__dirname +'/lib/head.js', 'utf8'));
 
 if (typeof(process.argv[2]) !== "undefined" && isNaN(process.argv[2])) {
@@ -145,7 +146,7 @@ function parseOptions(req) {
 	options.stop     =     req.query.stop     || req.body.stop     || "";
 
 	if (options.type === "") {
-		if (options.template.match("$")) {
+		if (options.template.match("$") || options.template.match("%")) {
 			options.type = "strftime";
 		} else {
 			options.type = "sprintf";

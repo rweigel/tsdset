@@ -1,6 +1,5 @@
 var Base = "";
 var Tests = [
-	"bdt$Y$m$dvmin.min,-PT1M10D,PT1M1D,strftime",
 	"bdt$Y$m$dvmin.min,2013-09-01,2013-09-05,strftime",
 	"bdt${Y;delta=1}$m$dvmin.min,1990-01-01,1990-01-10,strftime",
 	"bdt${Y;delta=1}$m$dvmin.min,1990-01-01,1991-01-01,strftime",

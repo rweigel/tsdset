@@ -1,16 +1,3 @@
-bdt$Y$m$dvmin.min,-PT1M10D,PT1M1D,strftime
-bdt20130819vmin.min
-bdt20130820vmin.min
-bdt20130821vmin.min
-bdt20130822vmin.min
-bdt20130823vmin.min
-...
-bdt20131026vmin.min
-bdt20131027vmin.min
-bdt20131028vmin.min
-bdt20131029vmin.min
-bdt20131030vmin.min
-
 bdt$Y$m$dvmin.min,2013-09-01,2013-09-05,strftime
 bdt20130901vmin.min
 bdt20130902vmin.min
