@@ -53,13 +53,14 @@
 	
 	function getoptions(check) {
 		options = {};
-		options.template = $("#TemplatePrefix").val() + $("#Template").val();
-		options.start    = $("#Start").val();
-		options.stop     = $("#Stop").val();
-		options.type     = "strftime";
-		options.check    = check;
-		options.debug    = true;
-		options.proxy    = "";
+		options.template  = $("#TemplatePrefix").val() + $("#Template").val();
+		//options.start     = $("#Start").val();
+		//options.stop      = $("#Stop").val();
+		options.timeRange = $("#Start").val() + "/" + $("#Stop").val();
+		options.type      = "strftime";
+		options.check     = check;
+		options.debug     = true;
+		options.proxy     = "";
 
 		var url = expanderurl(options.check);
 		
@@ -106,7 +107,7 @@
 
 		xtic = new Date();
 
-		var options    = getoptions(check);
+		var options = getoptions(check);
 	
 		if (check) {
 			$('#urlsvreport').text('');
