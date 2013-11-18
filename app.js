@@ -72,7 +72,7 @@ function printresults1(files,headers,options) {
 function printresults2(files,headers,options) {
 
 	res = options.res;
-	var str = options.template + "," + options.start + "," + options.stop + "," + options.type;
+	var str = options.template + "," + options.timeRange + "," + options.type;
 	
 	if (options.debug) console.log(str);
 	res.write(str + "\n");
@@ -118,9 +118,8 @@ function runtests(options) {
 		if (test[0] === '') return;
 
 		options.template = test[0];
-		options.start = test[1];
-		options.stop = test[2];
-		options.type = test[3];
+		options.timeRange = test[1];
+		options.type = test[2];
 
 		var files = expandtemplate(options,printresults2);
 		Nr = Nr + 1;
@@ -136,13 +135,12 @@ function parseOptions(req) {
 	function s2b(str) {if (str === "true") {return true} else {return false}}
 	function s2i(str) {return parseInt(str)}
 
-	options.testfile =     req.query.testfile || req.body.testfile || "tests/expandTemplate.tests.js"
-	options.template =     req.query.template || req.body.template || ""
-	options.check    = s2b(req.query.check    || req.body.check    || "false");
-	options.debug    = s2b(req.query.debug    || req.body.debug    || "false");
-	options.type     =     req.query.type     || req.body.type     || ""
-	options.start    =     req.query.start    || req.body.start    || "";
-	options.stop     =     req.query.stop     || req.body.stop     || "";
+	options.testfile  =     req.query.testfile  || req.body.testfile  || "tests/expandTemplate.tests.js"
+	options.template  =     req.query.template  || req.body.template  || ""
+	options.check     = s2b(req.query.check     || req.body.check     || "false");
+	options.debug     = s2b(req.query.debug     || req.body.debug     || "false");
+	options.type      =     req.query.type      || req.body.type      || ""
+	options.timeRange =     req.query.timeRange || req.body.timeRange || "";
 
 	if (options.type === "") {
 		if (options.template.match("$") || options.template.match("%")) {

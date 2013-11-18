@@ -14,4 +14,6 @@ RESULT=`diff tests/expandTemplate.now.txt tests/expandTemplate.out.txt`
 
 kill $PID
 
+echo $RESULT
+
 exit $RESULT
