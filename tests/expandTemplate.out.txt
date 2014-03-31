@@ -51,3 +51,6 @@ bdt200001vmin.min
 bdt$Y${m;delta=2}$dvmin.min,1990-01-01/1990-03-01,strftime
 bdt19900101vmin.min
 
+AK$Y$m,2014-03-20/2014-03-30,strftime
+AK201403
+

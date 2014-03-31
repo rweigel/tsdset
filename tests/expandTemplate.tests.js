@@ -10,6 +10,7 @@ var Tests = [
 	"bdt$Y$m$d-${Y;offset=1}${m;offset=1}$dvmin.min,2000-01-01/2000-01-04,strftime",
 	"bdt$Y${m;delta=2}${d;offset=1}vmin.min,2000-01-01/2000-01-04,strftime",
 	"bdt$Y${m;delta=2}$dvmin.min,1990-01-01/1990-03-01,strftime",
+	"AK$Y$m,2014-03-20/2014-03-30,strftime",
 	"bdt199901%02dvmin.min,1,9,sprintf",
 	"bdt1999010%dvmin.min,1,9,sprintf"
 ];

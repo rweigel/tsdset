@@ -14,6 +14,13 @@ RESULT=`diff tests/expandTemplate.now.txt tests/expandTemplate.out.txt`
 
 kill $PID
 
-echo $RESULT
+if [ -z "$RESULT" ]; then
+	echo "All tests passed."
+	exit 0;
+else
+	echo "At least one test failed.  Differences between"
+	echo "tests/expandTemplate.now.txt tests/expandTemplate.out.txt:"
+	echo "$RESULT"
+	exit 1;
+fi
 
-exit $RESULT
