@@ -76,33 +76,39 @@ function printresults2(files,headers,options) {
 	
 	if (options.debug) console.log(str);
 	res.write(str + "\n");
+	console.error(str);
 
 	if (headers.length) {
 		files.forEach(function(file,i) {
 			str = file + " " + headers[i]["last-modified"] + " " + headers[i]["content-length"];
 			if (options.debug) console.log(str);
 			res.write(str + "\n");
+			console.error(str);
 		});
 	} else {
 		if (files.length < 10) {
 			files.forEach(function(file) {
 				if (options.debug) console.log(file);
-				res.write(file + "\n");			
+				res.write(file + "\n");
+				console.error(file);			
 			});
 		} else {
 			for (i=0;i<5;i++) {
 				if (options.debug) console.log(files[i]);
 				res.write(files[i] + "\n");
+				console.error(files[i]);
 			}
 			if (options.debug) console.log("...")
 			res.write("..." + "\n");
 			for (i=files.length-5;i<files.length;i++) {
 				if (options.debug) console.log(files[i]);
 				res.write(files[i] + "\n");
+				console.error(files[i]);
 			}		
 		}
 		if (options.debug) console.log("");
 		res.write("\n");
+		console.error("\n");
 	}
 		
 }
@@ -112,7 +118,7 @@ function runtests(options) {
 	
 	var Nr = 0;
 	Tests.forEach(function(tests,i) {
-
+		//console.error("Testing "+tests);
 		test = tests.split(",");
 		
 		if (test[0] === '') return;

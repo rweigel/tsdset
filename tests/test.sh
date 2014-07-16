@@ -4,7 +4,9 @@ node app.js 7998 &
 
 PID=$!
 
-sleep 3
+echo "Starting tests in 2 seconds."
+
+sleep 2
 
 #curl -s "http://localhost:7998/?template=bdt%Y%m%dvmin.min&start=-P1M&stop=-P1D"
 

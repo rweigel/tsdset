@@ -54,3 +54,25 @@ bdt19900101vmin.min
 AK$Y$m,2014-03-20/2014-03-30,strftime
 AK201403
 
+bdt199901%02dvmin.min,1/9,sprintf
+bdt19990101vmin.min
+bdt19990102vmin.min
+bdt19990103vmin.min
+bdt19990104vmin.min
+bdt19990105vmin.min
+bdt19990106vmin.min
+bdt19990107vmin.min
+bdt19990108vmin.min
+bdt19990109vmin.min
+
+bdt1999010%dvmin.min,1/9,sprintf
+bdt19990101vmin.min
+bdt19990102vmin.min
+bdt19990103vmin.min
+bdt19990104vmin.min
+bdt19990105vmin.min
+bdt19990106vmin.min
+bdt19990107vmin.min
+bdt19990108vmin.min
+bdt19990109vmin.min
+
