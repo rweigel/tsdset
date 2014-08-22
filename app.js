@@ -98,7 +98,7 @@ function printresults2(files,headers,options) {
 				res.write(files[i] + "\n");
 				console.error(files[i]);
 			}
-			if (options.debug) console.log("...")
+			console.log("...")
 			res.write("..." + "\n");
 			for (i=files.length-5;i<files.length;i++) {
 				if (options.debug) console.log(files[i]);
@@ -125,6 +125,7 @@ function runtests(options) {
 
 		options.template = test[0];
 		options.timeRange = test[1];
+		options.indexRange = test[1];
 		options.type = test[2];
 
 		var files = expandtemplate(options,printresults2);
@@ -147,6 +148,7 @@ function parseOptions(req) {
 	options.debug     = s2b(req.query.debug     || req.body.debug     || "false");
 	options.type      =     req.query.type      || req.body.type      || ""
 	options.timeRange =     req.query.timeRange || req.body.timeRange || "";
+	options.indexRange =     req.query.indexRange || req.body.indexRange || "";
 
 	if (options.type === "") {
 		if (options.template.match("$") || options.template.match("%")) {

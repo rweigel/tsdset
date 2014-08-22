@@ -12,5 +12,13 @@ var Tests = [
 	"bdt$Y${m;delta=2}$dvmin.min,1990-01-01/1990-03-01,strftime",
 	"AK$Y$m,2014-03-20/2014-03-30,strftime",
 	"bdt199901%02dvmin.min,1/9,sprintf",
-	"bdt1999010%dvmin.min,1/9,sprintf"
+	"bdt1999010%dvmin.min,1/9,sprintf",
+	"bdt1999010%dvmin.min,1/9/3,sprintf",	
+	"bdt$Y$m${d;delta=3}vmin.min,2000-01-01/2000-01-07,strftime",
+	"bdt%Y%m%{d;delta=3}vmin.min,2000-01-01/2000-01-07,strftime",
+	"bdt$Y$m$dvmin.min,-P2D/2000-01-01,strftime",
+	"bdt$Y$m$dvmin.min,P2D/2000-01-01,strftime",
+	"bdt$Y$m$dvmin.min,P3D/PT2D,strftime"
 ];
+// This will change, so not included:
+// "bdt$Y$m$dvmin.min,2000-01-01/P1D,strftime"

@@ -76,3 +76,24 @@ bdt19990107vmin.min
 bdt19990108vmin.min
 bdt19990109vmin.min
 
+bdt1999010%dvmin.min,1/9/3,sprintf
+bdt19990101vmin.min
+bdt19990104vmin.min
+bdt19990107vmin.min
+
+bdt$Y$m${d;delta=3}vmin.min,2000-01-01/2000-01-07,strftime
+bdt20000101vmin.min
+bdt20000104vmin.min
+
+bdt%Y%m%{d;delta=3}vmin.min,2000-01-01/2000-01-07,strftime
+bdt20000101vmin.min
+bdt20000104vmin.min
+
+bdt$Y$m$dvmin.min,-P2D/2000-01-01,strftime
+bdt19991230vmin.min
+bdt19991231vmin.min
+
+bdt$Y$m$dvmin.min,P2D/2000-01-01,strftime
+bdt20000101vmin.min
+bdt20000102vmin.min
+

@@ -27,7 +27,7 @@
 	xtic = new Date();
 	var Expander = [];
 	Expander[0]  = "/";
-	Expander[1]  = "http://sarahandjeremy.net:8180/AutoplotServlet/SecureScriptServlet";
+	Expander[1]  = "http://autoplot.org/plot/dev/SecureScriptServlet";
 	Expander[2]  = "http://filefinder.elasticbeanstalk.com/v1/finder";	
 	var Proxy    = "http://localhost:8002/proxy?url=";
 
@@ -129,7 +129,7 @@
 	}
  	
 	$(document).ready(function(){
-				
+
 		$("#presets").append("<select id='presetselect' style='height:2.0em;width:100%'/>");
 		$("#presetselect").append("<option id='title'>-Tests-</option>");
 		for (i = 0; i < Tests.length; i++) {
@@ -141,8 +141,9 @@
 			var j = parseInt(id);
 			$("#TemplatePrefix").val("http://magweb.cr.usgs.gov/data/magnetometer/BDT/OneMinute/");
 			$("#Template").val(Tests[j].split(",")[0]);
-			$("#Start").val(Tests[j].split(",")[1]);
-			$("#Stop").val(Tests[j].split(",")[2]);
+			$("#Start").val(Tests[j].split(",")[1].split("/")[0]);
+			$("#Stop").val(Tests[j].split(",")[1].split("/")[1]);
+			console.log('here')
 		})
 		$('#presetselect').find('option:eq(1)').attr('selected', true).trigger("change");
 
@@ -160,6 +161,7 @@
  	<div id="submiturl"></div>
 	 	<div style="width:50%">
 	 	<form id="form" action="/" method="get">
+	 		<br/>
 	 		<input type="submit" class="try" value="Submit">
 			Template prefix
 	 		<br/>
