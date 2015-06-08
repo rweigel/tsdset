@@ -10,8 +10,14 @@ if (typeof(process.argv[2]) !== "undefined" && isNaN(process.argv[2])) {
 }
 
 // https://github.com/mikeal/request/issues/350
-process.on('uncaughtException',function(error){console.log(error);});
-
+process.on('uncaughtException', function(err) {
+	if (err.errno === 'EADDRINUSE') {
+		console.log("[tsdset] - Address already in use.");
+	} else {
+		console.log(err);
+	}
+	process.exit(1);
+})
 //var url     = require('url');
 var http    = require('http');
 http.globalAgent.maxSockets = 100;  // Most Apache servers have this set at 100.
