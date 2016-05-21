@@ -19,7 +19,8 @@ var Tests = [
 	"bdt$Y$m$dvmin.min,-P2D/2000-01-01,strftime",
 	"bdt$Y$m$dvmin.min,P2D/2000-01-01,strftime",
 	"bdt$Y$m$dvmin.min,P3D/PT2D,strftime",
-	"bdt$Y$jvmin.min,2012-09-01/2012-09-03,strftime"
+	"bdt$Y$jvmin.min,2012-09-01/2012-09-03,strftime",
+	"abc$Y$m$dT000000Z-${Y;offset=0}${m;offset=0}${d;offset=1}T000000Z,2016-03-29/2016-04-01,strftime"
 ];
 // This will change, so not included:
 // "bdt$Y$m$dvmin.min,2000-01-01/P1D,strftime"
