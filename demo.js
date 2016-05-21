@@ -1,17 +1,24 @@
 var fs = require('fs');
+list = expandtemplate = require(__dirname+'/lib/expandtemplate.js').expandtemplate;
 
-eval(fs.readFileSync(__dirname +'/lib/expandtemplate.js', 'utf8'));
-
-// Note that the offset needs to be applied to all associated dates. 
-expandtemplate({template: "abc$Y$m$dT000000Z-${Y;offset=0}${m;offset=0}${d;offset=1}T000000Z", "timeRange": "2016-03-29/2016-04-03", debug: true}, cb)
-
-function cb (result) {
-	console.log(result)
+opts = 
+{
+	template: "abc$Y$m$d-${Y;offset=0}${m;offset=1}${d;offset=1}",
+ 	timeRange: "2016-03-29/2016-04-03",
+ 	debug: false
 }
 
-// Note that the offset needs to be applied to all associated dates. 
-expandtemplate({template: "abc$Y$m$dT000000Z-$Y$m${d;offset=1}T000000Z", "timeRange": "2016-03-29/2016-04-03", debug: true}, cb)
+console.log(opts)
+list = expandtemplate(opts)
+console.log(list)
+console.log("")
 
-function cb (result) {
-	console.log(result)
+opts = 
+{
+	template: "$Y$m${d;delta=2}-${Y;offset=0}${m;offset=0}${d;offset=2}",
+ 	timeRange: "2016-03-29/2016-04-08",
+ 	debug: true
 }
+console.log(opts)
+list = expandtemplate(opts)
+console.log(list)
