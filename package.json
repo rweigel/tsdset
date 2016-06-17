@@ -11,6 +11,6 @@
     "express": "3.0.0beta7"
   },
   "scripts": {
-	"test": "sh tests/test.sh"
+	"test": "cd test;sh test.sh"
    }
 }
