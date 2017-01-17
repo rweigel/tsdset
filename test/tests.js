@@ -19,5 +19,9 @@ var Tests = [
 	"bdt$Y$m$dvmin.min,P3D/PT2D,strftime",
 	"bdt$Y$jvmin.min,2012-09-01/2012-09-03,strftime",
 	"$Y$m$d-${Y;offset=0}${m;offset=0}${d;offset=1},2016-03-29/2016-04-01,strftime",
-	"$Y$m${d;delta=3}-${Y;offset=0}${m;offset=0}${d;offset=2},2016-04-01/2016-04-10,strftime"
+	"$Y$m${d;delta=3}-${Y;offset=0}${m;offset=0}${d;offset=2},2016-04-01/2016-04-10,strftime",
+	"$Y$m$d,2016-01-01/2016-01-01T00:00:01.000,strftime",
+	"$Y$m$d-$Y$m${d;offset=1},2016-01-01/2016-01-01,strftime",
+	"$Y$m$d-$Y$m${d;offset=1},2016-01-01/2016-01-01T00:00:01.000,strftime",
+	"$Y$m$d-$Y$m${d;offset=1},2016-01-01/2016-01-02T00:00:01.000,strftime"
 ];
