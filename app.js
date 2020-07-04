@@ -1,3 +1,5 @@
+'use strict'
+
 var fs = require('fs');
 
 eval(fs.readFileSync(__dirname +'/lib/expandtemplate.js', 'utf8'));
