@@ -3,9 +3,9 @@ list = expandtemplate = require(__dirname+'/lib/expandtemplate.js').expandtempla
 
 opts = 
 {
-	template: "abc$Y$m$d-${Y;offset=0}${m;offset=1}${d;offset=1}",
- 	timeRange: "2016-03-29Z/2016-04-03Z",
- 	debug: false
+	template: "bdt$Y$m$dvmin.min",
+ 	timeRange: "P2D/2000-01-01",
+ 	debug: true
 }
 
 console.log(opts)
