@@ -7,7 +7,7 @@
   },
   "main": "lib/expandtemplate",
   "dependencies": {
-    "request": "2.9.203",
+    "request": "2.88.2",
     "express": "3.0.0beta7"
   },
   "scripts": {
