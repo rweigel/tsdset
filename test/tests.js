@@ -23,5 +23,8 @@ var Tests = [
 	"$Y$m$d,2016-01-01/2016-01-01T00:00:01.000,strftime",
 	"$Y$m$d-$Y$m${d;offset=1},2016-01-01/2016-01-01,strftime",
 	"$Y$m$d-$Y$m${d;offset=1},2016-01-01/2016-01-01T00:00:01.000,strftime",
-	"$Y$m$d-$Y$m${d;offset=1},2016-01-01/2016-01-02T00:00:01.000,strftime"
+	"$Y$m$d-$Y$m${d;offset=1},2016-01-01/2016-01-02T00:00:01.000,strftime",
+	"$Y-$m-$dT${H;delta=2} $Y-$m-$dT${H;offset=2},2016-04-01/2016-04-02,strftime",
+	"$Y-$m-$dT${H;delta=2} $Y-$m-$dT${H;offset=2},2016-04-01/2016-04-02,strftime",
+	"bdt$Y$m$d${H;delta=6}vmin.min,2021-03-13/2021-03-15,strftime"
 ];
