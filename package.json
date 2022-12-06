@@ -8,7 +8,7 @@
   "main": "lib/expandtemplate",
   "dependencies": {
     "request": "2.9.203",
-    "express": "3.0.0beta7"
+    "express": "4.17.3"
   },
   "scripts": {
     "test": "cd test;sh test.sh"
